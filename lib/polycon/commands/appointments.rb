@@ -16,6 +16,13 @@ module Polycon
         ]
 
         def call(date:, professional:, name:, surname:, phone:, notes: nil)
+          if Dir.exist?((Dir.home) +"/.polycon/#{professional}")
+            if (File.exist?((Dir.home) +"/.polycon/professionals/#{name}"))
+                puts "El profesional ya tiene ocupado ese turno"
+            end
+          else
+            File.new((Dir.home) +"/.polycon/professionals/#{name}"))
+          end
           warn "TODO: Implementar creación de un turno con fecha '#{date}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
