@@ -18,6 +18,7 @@ module Polycon
 
         def call(date:, professional:, name:, surname:, phone:, notes: nil)
           Appointment.new(date, professional).create(name, surname, phone, notes)
+          
           #warn "TODO: Implementar creación de un turno con fecha '#{date}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
