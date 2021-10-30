@@ -1,3 +1,4 @@
+require "./lib/polycon/models/professional"
 module Polycon
   module Commands
     module Professionals
@@ -12,12 +13,8 @@ module Polycon
         ]
 
         def call(name:, **)
-          if Dir.exist?((Dir.home) +"/.polycon/#{name}")
-            puts "Este profesional existe"
-          else
-            Dir.mkdir((Dir.home) +"/.polycon/#{name}")
-          end
-          warn "TODO: Implementar creación de un o una profesional con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          Professional.new.create(name)
+          #warn "TODO: Implementar creación de un o una profesional con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
 
       end
@@ -33,15 +30,8 @@ module Polycon
         ]
 
         def call(name: nil)
-          if Dir.exist?((Dir.home) +"/.polycon/#{name}")
-            if Dir.empty?((Dir.home) +"/.polycon/#{name}")
-              Dir.delete((Dir.home) +"/.polycon/#{name}")
-              puts "El profesional fue borrado con exito"
-            end
-          else
-            puts "No existe ese profesional"
-          end
-          warn "TODO: Implementar borrado de la o el profesional con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          Professional.new.delete(name)
+          #warn "TODO: Implementar borrado de la o el profesional con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -53,8 +43,8 @@ module Polycon
         ]
 
         def call(*)
-          Dir.foreach((Dir.home) +"/.polycon") {|p| puts "#{p}\n"}
-          warn "TODO: Implementar listado de profesionales.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          Professional.new.list
+          #warn "TODO: Implementar listado de profesionales.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -69,12 +59,8 @@ module Polycon
         ]
 
         def call(old_name:, new_name:, **)
-          if !Dir.exist?((Dir.home) +"/.polycon/#{old_name}")
-            puts "No existe ese profesional"
-          else
-            File.rename((Dir.home) +"/.polycon/#{old_name}", (Dir.home) +"/.polycon/#{new_name}")
-          end
-          warn "TODO: Implementar renombrado de profesionales con nombre '#{old_name}' para que pase a llamarse '#{new_name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          Professional.new.rename(old_name,new_name)
+          #warn "TODO: Implementar renombrado de profesionales con nombre '#{old_name}' para que pase a llamarse '#{new_name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
     end
