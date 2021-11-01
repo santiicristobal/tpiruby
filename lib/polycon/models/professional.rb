@@ -39,4 +39,10 @@ class Professional include Rute
         end
         self.polycon_exist?(list)
     end
+
+    def self.listWithoutWarn
+
+        Dir.foreach((Dir.home) +"/.polycon").select {|p| !File.directory? p}
+
+    end
 end

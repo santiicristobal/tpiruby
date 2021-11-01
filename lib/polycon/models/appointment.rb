@@ -1,5 +1,7 @@
 require "./lib/polycon/models/path"
 require "date"
+require "erb"
+require "./lib/polycon/models/professional"
 class Appointment include Rute
     def date_control(date)
         begin
@@ -12,6 +14,14 @@ class Appointment include Rute
     def initialize(date, professional)
         @date= self.date_control(date)
         @professional= professional
+    end
+
+    def professional
+        @professional
+    end
+
+    def date
+        @date
     end
 
     def create (name, surname, phone, notes)
@@ -127,6 +137,60 @@ class Appointment include Rute
         end
         end
         self.polycon_exist?(edit)
+    end
+
+    def self.htmlday(date, professional)
+        appo=Appointment.appointmentDay(date, professional)
+        template= <<-ERB
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title> Hola! </title>
+        </head>
+        <body>
+            <h1 align="center"> <%=DateTime.parse(date).strftime("%F")%> </h1>
+            <table align="center" border=1>
+                <tr>
+                    <th> Professional </th>
+                    <th> hour </th>
+                </tr>
+                <% appointments.each do |appointment| %>
+                    <tr>
+                        <td> <%= appointment.professional.gsub("_", " ") %> </td>
+                        <td> <%= DateTime.parse(appointment.date).strftime("%R") %> </td>
+                    </tr>
+                <% end %>
+            </table>
+        </body>
+        </html>
+        ERB
+        erb= ERB.new(template)
+        output= erb.result_with_hash(appointments:appo, date:date)
+        File.write(Dir.home+"/grilladay.html", output)
+    end
+
+    def self.appointmentDay(date, professional)
+        if (professional.nil?)
+            arr2=[]
+            arr=Professional.listWithoutWarn.to_a
+            arr.each do |p|
+                arr2=arr2+Appointment.appoDay(date, p)
+            end
+            arr2.to_a
+        else
+            arr=Appointment.appoDay(date, professional)
+            arr.to_a
+        end
+    end
+
+    def self.appoDay(date, professional)
+        extend Rute
+        l=Dir.foreach(self.professional_rute(professional)).select {|p| !File.directory? p}
+        l.map {|p| 
+        if (!File.directory? p) && (DateTime.parse(p).strftime("%F")==DateTime.parse(date).strftime("%F"))
+            Appointment.new(p, professional)
+        end
+        }.compact
     end
 end
 

@@ -1,4 +1,5 @@
 require "./lib/polycon/models/appointment"
+require "./lib/polycon/models/professional"
 module Polycon
   module Commands
     module Appointments
@@ -18,7 +19,7 @@ module Polycon
 
         def call(date:, professional:, name:, surname:, phone:, notes: nil)
           Appointment.new(date, professional).create(name, surname, phone, notes)
-          
+
           #warn "TODO: Implementar creación de un turno con fecha '#{date}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
@@ -123,6 +124,14 @@ module Polycon
         def call(date:, professional:, **options)
           Appointment.new(date, professional).edit(**options)
           #warn "TODO: Implementar modificación de un turno de la o el profesional '#{professional}' con fecha '#{date}', para cambiarle la siguiente información: #{options}.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+        end
+      end
+      class Commandsgrilla < Dry::CLI::Command
+        argument :date, required: true, desc: 'Full date for the appointment'
+        option :professional, required: false, desc: 'Full name of the professional'
+
+        def call(date:, professional: nil)
+          Appointment.htmlday(date, professional)
         end
       end
     end
